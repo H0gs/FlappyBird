@@ -53,16 +53,16 @@ https://user-images.githubusercontent.com/95542282/165306721-32c312bc-50e4-43ba-
 function SmoothBounce(){
     setTimeout(()=>{
         if(dead == false){
-            if(S < 3){
+            if(S < 7){
                 S = S + 1;
                 // console.log(S);
-                pos = pos - (JumpPower /4)
+                pos = pos - (JumpPower /8)
                 player.style.top = String(pos)+"px";
                 Game.appendChild(player);
                 SmoothBounce();
             }
         }
-    },100)
+    },50)
 }
     function Boing(){
         S = 0;
@@ -108,14 +108,14 @@ function SmoothBounce(){
         setTimeout(() => {
             if(pos < MaxPos){
                 if(Jumping == false){
-                    pos = pos + GForce;
+                    pos = pos + (GForce/2);
                     temp.innerHTML = pos;
                     player.style.top = String(pos)+"px";
                     Game.appendChild(player);
                 }
             }
             Gravity();
-        }, 100)
+        }, 50)
     }
     Gravity();
     var PipeID = 0;
