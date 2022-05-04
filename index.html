@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<body>
+    <link rel="stylesheet" href="styles.css"> 
+    <div id="Game" class="Game">
+        <h1 id="Temp" class="Score">FLAPPY BIRD</h1>
+        <p class="Desc">Welcome to Flappy Bird! Don't hit the pipes! Speed will gradually increase! L changes you birds color!</p>
+        <img id="Player" class="Player" src="https://user-images.githubusercontent.com/95542282/165820742-8fc9080f-0d64-41d4-952a-967678657606.png">   
+    </div>
+</body>
+<!-- Pipes:
+    Pipe 1:
+https://user-images.githubusercontent.com/95542282/165306061-ec7b8ec5-f771-4a66-9e2f-83ceaf27d03d.png
+    Pipe 2:
+https://user-images.githubusercontent.com/95542282/165306332-ec30a47b-1a1c-4055-b9f8-fb9c094dc886.png
+    Pipe 3:
+https://user-images.githubusercontent.com/95542282/165306512-3599320a-15b4-4e01-a89a-6b01eb85ab77.png
+    Pipe 4:
+https://user-images.githubusercontent.com/95542282/165306721-32c312bc-50e4-43ba-bb16-13cac91b7de8.png
+-->
+<script>
+    var pos = 0;
+    const height = window.innerHeight;
+    const width = window.innerWidth;
+    console.log("Height: "+height+" Width: "+width);
+    const Pipes = [
+        ["https://user-images.githubusercontent.com/95542282/165540852-03b3c7ec-7ff6-4227-aab2-50bfc074409a.png",height/2.181286549707602,height/1.507070707070707],
+        ["https://user-images.githubusercontent.com/95542282/165541825-41d00184-b7fb-476c-958e-12ef001811a0.png",height/2.712727272727273,height/1.755294117647059],
+        ["https://user-images.githubusercontent.com/95542282/165542914-43187d22-f8cd-48d0-86df-a83af2b51cca.png",height/1.5672268907563025,height/1.2090761750405186],
+        ["https://user-images.githubusercontent.com/95542282/165543591-632353fe-ec38-4d15-867d-e1053939443a.png",height/1.776190476190476,height/1.3087719298245615]]
+    
+    const Birds = [
+        "https://user-images.githubusercontent.com/95542282/165820742-8fc9080f-0d64-41d4-952a-967678657606.png",    
+        "https://user-images.githubusercontent.com/95542282/166517780-4ebfe19b-da85-46ac-905a-1999527d13f6.png",
+        "https://user-images.githubusercontent.com/95542282/166681367-a28ee4d6-8af0-469e-ae4c-eef3cc7534f8.png",
+        "https://user-images.githubusercontent.com/95542282/166682434-ef43ae8e-f6de-4ded-ab24-7a266f2ef49c.png"
+    ]
+
+    const JumpPower = 100;
+    const GForce = 20;
+    const Game = document.getElementById("Game");
+    var AechOne = document.createElement("h1");
+    AechOne.style.position = 'absolute';
+    AechOne.style.top = String(width/7);
+    AechOne.style.left = String(width/2.3)+"px";
+    AechOne.innerHTML = "Highest Score: ";
+    Game.appendChild(AechOne);
+    const MaxPos = window.innerHeight-100;
+    const MinPos = 0;
+    var S = 0;
+    var dead = false;
+    var Highscore = 0;
+    var Score = 0;
+function SmoothBounce(){
+    setTimeout(()=>{
+        if(dead == false){
+            if(S < 3){
+                S = S + 1;
+                // console.log(S);
+                pos = pos - (JumpPower /4)
+                player.style.top = String(pos)+"px";
+                Game.appendChild(player);
+                SmoothBounce();
+            }
+        }
+    },100)
+}
+    function Boing(){
+        S = 0;
+        SmoothBounce();
+        setTimeout(()=>{
+            Jumping = false;
+        },400)
+    }
+    const player = document.getElementById("Player");
+    var Jumping = false;
+    player.style.position = 'absolute';
+    const temp = document.getElementById("Temp");
+    window.addEventListener("click", P)
+    function P(){
+        if(dead == false){
+            if(pos > MinPos){
+                Jumping = true;
+                // console.log("A");
+                Boing();
+                // console.log("B");
+            }
+        }
+    }
+    var BirdID = 0;
+    document.addEventListener('keydown', logKey);
+    function logKey(e) {
+        // log.textContent += ` ${e.code}`;
+        // console.log(e.code);
+        if(e.code == "Space"){
+            P();
+            }
+            // console.log("Forward!");
+        if(e.code == "KeyL"){
+            console.log("Pressed!");
+            player.src = Birds[BirdID];
+            BirdID = BirdID + 1;
+            if(BirdID >= Birds.length){
+                BirdID = 0;
+            }
+        }
+    }
+    function Gravity(){
+        setTimeout(() => {
+            if(pos < MaxPos){
+                if(Jumping == false){
+                    pos = pos + GForce;
+                    temp.innerHTML = pos;
+                    player.style.top = String(pos)+"px";
+                    Game.appendChild(player);
+                }
+            }
+            Gravity();
+        }, 100)
+    }
+    Gravity();
+    var PipeID = 0;
+    var img
+    var Earnable = true;
+    var CoolDown = 50;
+    var SUbtraction = 0.100;
+    const DefaultCoolDown = CoolDown;
+    var Movement = 0.005;
+    const DefaultMovement = Movement;
+    var IncreamentUntilIncrease = 2;
+    var Increamenter = 0;
+    function MakePipe(){
+        PipeID = Math.round(Math.random()*4);
+        if(PipeID == 4){PipeID = 3};
+        // console.log("The pipe id is: "+PipeID);
+        Pipe = document.createElement("img")
+        Pipe.src = Pipes[PipeID][0];
+        Pipe.style.height = String(0.9*height)+"px";
+        Pipe.style.width = String(width/25)+"px";
+        Pipe.style.position = "absolute";
+        Pipe.pos = 0.9*width
+        Pipe.style.left = String(Pipe.pos)+"px";
+        Earnable = true;
+        Game.appendChild(Pipe);
+        Increamenter = Increamenter + 1;
+        if(Increamenter >= IncreamentUntilIncrease){
+            Increamenter = 0;
+            CoolDown = CoolDown - 5;
+        }
+        console.log("The cooldown = "+CoolDown);
+        console.log("Increamenter = "+ Increamenter);
+    }
+    MakePipe();
+    function MovePipe(){
+        setTimeout(()=>{
+            Pipe.pos = Pipe.pos - (Movement * width)
+            Pipe.style.left = String(Pipe.pos)+"px";
+            Game.appendChild(Pipe);
+            // console.log("Pipepos: "+Pipe.pos);
+            if(Pipe.pos < -30){
+                Game.removeChild(Pipe)
+                MakePipe();
+            }
+            if(Pipe.pos < 50){
+                AttemptMurder();
+            }
+            if(dead == false){
+                MovePipe();
+            }
+        },CoolDown)
+    }
+    MovePipe();
+    function AttemptMurder(){
+        if(pos > Pipes[PipeID][1] && pos < Pipes[PipeID][2]){
+            // console.log("Safe!")
+            // console.log("Player pos: "+pos+" pipes bottom lip: "+Pipes[PipeID][1]+" pipes top lip: "+Pipes[PipeID][2]);
+            if(Earnable == true){
+                Earnable = false;
+                Score = Score + 1;
+            }
+        }else{
+            console.log("You are die")
+            console.log("Player pos: "+pos+" pipes bottom lip: "+Pipes[PipeID][1]+" pipes top lip: "+Pipes[PipeID][2]);
+            dead = true;
+            console.log(Score);
+            if(Score > Highscore){
+                Highscore = Score;
+                AechOne.innerHTML = "Highest Score: "+Highscore;
+            }
+            Restart();
+        }
+    }
+    function Restart(){
+        console.log("Start")
+        RestartIMG = document.createElement("img");
+        RestartIMG.style.position = "absolute";
+        RestartIMG.src = "https://user-images.githubusercontent.com/95542282/165950121-1fe36d5b-a11c-46e3-a93d-2bcef8b1d8af.png";
+        RestartIMG.style.left = String(width/2.3)+"px";
+        RestartIMG.style.top = String(height/2.6)+"px";
+        RestartIMG.style.width = String(width/6)+"px";
+        RestartIMG.style.height = String(width/6)+"px";
+        Game.appendChild(RestartIMG);
+        PastScore = document.createElement("h3");
+        PastScore.style.position = 'absolute';
+        PastScore.style.left = String(width/2.025)+"px";
+        PastScore.style.top = String(height/3)+"px";
+        PastScore.innerHTML = "Score: "+Score;
+        Game.appendChild(PastScore);
+        console.log("End");
+        RestartIMG.addEventListener('click', R)
+        function R(){
+            console.log(":D!");
+            CoolDown = DefaultCoolDown;
+            Movement = DefaultMovement;
+            SUbtraction = 0.100;
+            Game.removeChild(Pipe);
+            dead = false;
+            MakePipe();
+            MovePipe();
+            Game.removeChild(RestartIMG);
+            Game.removeChild(PastScore);
+            Score = 0;
+        }
+    }
+    // console.log(width/793)
+    // // Just for testing, delete later. 
+    // function mousemove(event){
+    // console.log("pageX: ",event.pageX, 
+    // "pageY: ", event.pageY, 
+    // "clientX: ", event.clientX, 
+    // "clientY:", event.clientY)
+    // }
+    // window.addEventListener('click', mousemove);
+    // End of test function
+</script>
